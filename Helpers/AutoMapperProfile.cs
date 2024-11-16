@@ -8,13 +8,13 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<AuthorDTO, Author>();
-        CreateMap<Author, AuthorDTO>();
+        CreateMap<AuthorDto, Author>();
+        CreateMap<Author, AuthorDto>();
         
-        CreateMap<BookDTO, Book>();
-        CreateMap<Book, BookDTO>();
+        CreateMap<BookDto, Book>();
+        CreateMap<Book, BookDto>();
         
-        CreateMap<PublisherDTO, Publisher>();
-        CreateMap<Publisher, PublisherDTO>();
+        CreateMap<PublisherDto, Publisher>();
+        CreateMap<Publisher, PublisherDto>();
     }
 }
