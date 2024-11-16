@@ -6,6 +6,7 @@ using LibraryAPI.Helpers;
 using LibraryAPI.Repositories;
 using LibraryAPI.Validators;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace LibraryAPI.Configuration;
 
@@ -16,6 +17,13 @@ public static class ServiceConfiguration
         var connectionString = configuration["ConnectionStrings:DefaultConnection"];
         services.AddDbContext<LibraryDbContext>(options =>
             options.UseSqlServer(connectionString));
+        
+        services.AddLogging(logging =>
+        {
+            logging.AddConsole();
+            logging.AddDebug();
+            logging.AddEventSourceLogger();
+        });
         
         services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
         
