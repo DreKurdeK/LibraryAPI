@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using LibraryAPI.DTOs;
 using LibraryAPI.Exceptions;
 using LibraryAPI.Models;
@@ -6,72 +7,100 @@ using LibraryAPI.Repositories;
 
 namespace LibraryAPI.Services;
 
-public class BookService(IBookRepository bookRepository, IAuthorRepository authorRepository, IPublisherRepository publisherRepository, IMapper mapper) : IBookService
+public class BookService(
+    IBookRepository bookRepository,
+    ILogger<BookService> logger,
+    IValidator<Book> bookValidator,
+    IValidator<BookDto> bookDtoValidator) : IBookService
 {
     private readonly IBookRepository _bookRepository = bookRepository;
-    private readonly IAuthorRepository _authorRepository = authorRepository;
-    private readonly IPublisherRepository _publisherRepository = publisherRepository;
-    private readonly IMapper _mapper = mapper;
+    private readonly IValidator<Book> _bookValidator = bookValidator;
+    private readonly IValidator<BookDto> _bookDtoValidator = bookDtoValidator;
+    private readonly ILogger<BookService> _logger = logger;
 
     public async Task<List<Book>> GetAllBooksAsync()
     {
-        return await _bookRepository.GetAllBooksAsync();
+        try
+        {
+            _logger.LogInformation("Fetching all books.");
+            return await _bookRepository.GetAllBooksAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while fetching books.");
+            throw new Exception("An error occurred while fetching books.", ex);
+        }
     }
 
     public async Task<Book?> GetByIdAsync(Guid id)
     {
-        var book = await _bookRepository.GetByIdAsync(id);
-        if (book == null)
+        try
         {
-            throw new BookNotFoundException(id);
+            _logger.LogInformation($"Fetching book with ID: {id}");
+            var book = await _bookRepository.GetByIdAsync(id);
+            return book;
         }
-        
-        return book;
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while fetching book.");
+            throw new Exception("An error occurred while fetching book.", ex);
+        }
     }
 
-    public async Task AddAsync(BookDTO bookDto)
+    public async Task AddAsync(BookDto bookDto)
     {
-        var author = await _authorRepository.GetByIdAsync(bookDto.AuthorId);
-        if (author == null) throw new AuthorNotFoundException(bookDto.AuthorId);
-        
-        var publisher = await _publisherRepository.GetByIdAsync(bookDto.PublisherId);
-        if (publisher == null) throw new PublisherNotFoundException(bookDto.PublisherId);
-        
-        var book = _mapper.Map<Book>(bookDto);
-        book.Author = author;
-        book.Publisher = publisher;
-        
-        await _bookRepository.AddAsync(book);
-    }
-
-    public async Task UpdateAsync(Guid id, BookDTO bookDto)
-    {
-        var existingBook = await _bookRepository.GetByIdAsync(id);
-        if (existingBook == null)
+        try
         {
-            throw new BookNotFoundException(id);
+            var validationResult = await _bookDtoValidator.ValidateAsync(bookDto);
+            if (!validationResult.IsValid)
+            {
+                _logger.LogWarning("Invalid book data provided.");
+                throw new Exception("Book data is invalid.");
+            }
+            
+            await _bookRepository.AddAsync(bookDto);
+            _logger.LogInformation("Book added successfully.");
         }
-        _mapper.Map(bookDto, existingBook);
-        
-        var author = await _authorRepository.GetByIdAsync(bookDto.AuthorId);
-        if (author == null) throw new AuthorNotFoundException(bookDto.AuthorId);
-        existingBook.Author = author;
-        
-        var publisher = await _publisherRepository.GetByIdAsync(bookDto.PublisherId);
-        if (publisher == null) throw new PublisherNotFoundException(bookDto.PublisherId);
-        existingBook.Publisher = publisher;
-        
-        await _bookRepository.UpdateAsync(existingBook);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while adding book.");
+            throw new Exception("An error occurred while adding book.", ex);
+        }
+    }
+    
+    public async Task UpdateAsync(Book book)
+    {
+        try
+        {
+            var validationResult = await _bookValidator.ValidateAsync(book);
+            if (!validationResult.IsValid)
+            {
+                _logger.LogWarning("Invalid book data provided.");
+                throw new Exception("Book data is invalid.");
+            }
+            
+            await _bookRepository.UpdateAsync(book);
+
+            _logger.LogInformation("Book updated successfully.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while updating book.");
+            throw new Exception("An error occurred while updating book.", ex);
+        }
     }
 
     public async Task DeleteAsync(Guid id)
     {
-        var book = await _bookRepository.GetByIdAsync(id);
-        if (book == null)
+        try
         {
-            throw new BookNotFoundException(id);
+            await _bookRepository.DeleteAsync(id);
+            _logger.LogInformation($"Book with ID: {id} deleted successfully.");
         }
-        
-        await _bookRepository.DeleteAsync(id);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while deleting book.");
+            throw new Exception("An error occurred while deleting book.", ex);
+        }
     }
 }
