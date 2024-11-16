@@ -21,7 +21,7 @@ public class PublisherRepository(LibraryDbContext dbContext, IMapper mapper) : I
         return await _dbContext.Publishers.FindAsync(id);
     }
 
-    public async Task AddAsync(PublisherDTO publisherDto)
+    public async Task AddAsync(PublisherDto publisherDto)
     {
         var publisher = _mapper.Map<Publisher>(publisherDto);
         publisher.Id = Guid.NewGuid();

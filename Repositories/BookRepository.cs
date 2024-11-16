@@ -21,7 +21,7 @@ public class BookRepository(LibraryDbContext dbContext, IMapper mapper) : IBookR
         return await _dbContext.Books.FindAsync(id);
     }
 
-    public async Task AddAsync(BookDTO bookDto)
+    public async Task AddAsync(BookDto bookDto)
     {
         var book = _mapper.Map<Book>(bookDto);
         book.Id = Guid.NewGuid();

@@ -21,7 +21,7 @@ public class AuthorRepository(LibraryDbContext dbContext, IMapper mapper) : IAut
         return await _dbContext.Authors.FindAsync(id);
     }
 
-    public async Task AddAsync(AuthorDTO authorDto)
+    public async Task AddAsync(AuthorDto authorDto)
     {
         var author = _mapper.Map<Author>(authorDto);
         author.Id = Guid.NewGuid();

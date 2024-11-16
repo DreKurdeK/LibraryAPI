@@ -7,7 +7,7 @@ public interface IPublisherRepository
 {
     Task<List<Publisher>> GetAllPublishersAsync();
     Task<Publisher?> GetByIdAsync(Guid id);
-    Task AddAsync(PublisherDTO publisher);
+    Task AddAsync(PublisherDto publisher);
     Task UpdateAsync(Publisher publisher);
     Task DeleteAsync(Guid id);
 }
