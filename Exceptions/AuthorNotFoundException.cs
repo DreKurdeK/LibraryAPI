@@ -2,7 +2,7 @@
 
 public class AuthorNotFoundException : Exception
 {
-    public int AuthorId { get; }
+    public Guid AuthorId { get; }
 
     public AuthorNotFoundException(Guid authorId)
         : base($"Author with ID {authorId} does not exist.")
@@ -10,7 +10,7 @@ public class AuthorNotFoundException : Exception
         AuthorId = authorId;
     }
 
-    public AuthorNotFoundException(int authorId, string message)
+    public AuthorNotFoundException(Guid authorId, string message)
         : base(message)
     {
         AuthorId = authorId;

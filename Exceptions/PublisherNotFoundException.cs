@@ -2,7 +2,7 @@
 
 public class PublisherNotFoundException : Exception
 {
-    public int PublisherId { get; }
+    public Guid PublisherId { get; }
 
     public PublisherNotFoundException(Guid publisherId)
         : base($"Publisher with ID {publisherId} does not exist.")
@@ -10,7 +10,7 @@ public class PublisherNotFoundException : Exception
         PublisherId = publisherId;
     }
 
-    public PublisherNotFoundException(int publisherId, string message)
+    public PublisherNotFoundException(Guid publisherId, string message)
         : base(message)
     {
         PublisherId = publisherId;
