@@ -39,6 +39,11 @@ public class PublisherService(
             var publisher = await _publisherRepository.GetByIdAsync(id);
             return publisher;
         }
+        catch (PublisherNotFoundException ex)
+        {
+            _logger.LogError(ex, $"Publisher with ID {ex.PublisherId} was not found.");
+            throw;
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred while fetching publisher.");
@@ -96,6 +101,11 @@ public class PublisherService(
         {
             await _publisherRepository.DeleteAsync(id);
             _logger.LogInformation($"Publisher with ID: {id} deleted successfully.");
+        }
+        catch (PublisherNotFoundException ex)
+        {
+            _logger.LogError(ex, $"Publisher with ID {ex.PublisherId} could not be found for deletion.");
+            throw;
         }
         catch (Exception ex)
         {

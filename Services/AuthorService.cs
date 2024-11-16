@@ -28,6 +28,11 @@ public class AuthorService(
             var author = await _authorRepository.GetByIdAsync(id);
             return author;
         }
+        catch (AuthorNotFoundException ex)
+        {
+            _logger.LogError(ex, $"Author with ID {ex.AuthorId} was not found.");
+            throw;
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred while fetching author.");
@@ -99,6 +104,11 @@ public class AuthorService(
         {
             await _authorRepository.DeleteAsync(id);
             _logger.LogInformation($"Author with ID: {id} deleted successfully.");
+        }
+        catch (AuthorNotFoundException ex)
+        {
+            _logger.LogError(ex, $"Author with ID {ex.AuthorId} could not be found for deletion.");
+            throw;
         }
         catch (Exception ex)
         {

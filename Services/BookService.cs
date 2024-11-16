@@ -25,10 +25,15 @@ public class BookService(
             _logger.LogInformation("Fetching all books.");
             return await _bookRepository.GetAllBooksAsync();
         }
+        catch (BookNotFoundException ex)
+        {
+            _logger.LogError(ex, $"Book with ID {ex.BookId} was not found.");
+            throw;
+        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred while fetching books.");
-            throw new Exception("An error occurred while fetching books.", ex);
+            _logger.LogError(ex, "Error occurred while fetching book.");
+            throw new Exception("An error occurred while fetching book.", ex);
         }
     }
 
@@ -96,6 +101,11 @@ public class BookService(
         {
             await _bookRepository.DeleteAsync(id);
             _logger.LogInformation($"Book with ID: {id} deleted successfully.");
+        }
+        catch (BookNotFoundException ex)
+        {
+            _logger.LogError(ex, $"Book with ID {ex.BookId} could not be found for deletion.");
+            throw;
         }
         catch (Exception ex)
         {
