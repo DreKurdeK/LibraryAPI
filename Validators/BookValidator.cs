@@ -14,7 +14,7 @@ public class BookValidator : AbstractValidator<Book>
         
         RuleFor(b => b.ISBN)
             .NotEmpty().WithMessage("ISBN is required")
-            .Matches(@"^\d{13}$").WithMessage("ISBN must be 13 digits");
+            .Matches(@"^\d{13}$").WithMessage("ISBN must be exactly 13 digits");
         
         RuleFor(b => b.Category)
             .IsInEnum().WithMessage("Category is required or incorrect value");
