@@ -35,11 +35,6 @@ public class AuthorService(
         }
     }
 
-    public Task AddAsync(Author author)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<List<Author>> GetAllAuthorsAsync()
     {
         try
