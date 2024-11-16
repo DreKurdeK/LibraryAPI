@@ -1,6 +1,9 @@
 ﻿namespace LibraryAPI.Configuration;
 
-public class ServiceConfiguration
+public static class ServiceConfiguration
 {
-    
+    public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    {
+        
+    }
 }
