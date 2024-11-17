@@ -30,7 +30,7 @@ public class AuthorController(
         return Ok(authors);
     }
 
-    // GET: api/product/{id}
+    // GET: api/author/{id}
     [HttpGet("{id}")]
     public async Task<ActionResult<Author>> GetByIdAsync(Guid id)
     {
@@ -45,7 +45,7 @@ public class AuthorController(
         return Ok(author);
     }
     
-    // POST: api/product
+    // POST: api/author
     [HttpPost]
     public async Task<ActionResult<AuthorDto>> AddAsync(AuthorDto? authorDto)
     {
@@ -63,20 +63,20 @@ public class AuthorController(
         return Created();
     }
     
-    // PUT: api/product/{id}
+    // PUT: api/author/{id}
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateAsync(Guid id, Author author)
     {
         if (id != author.Id)
         {
-            _logger.LogWarning("Product ID in the route does not match ID in the body");
+            _logger.LogWarning("Author ID in the route does not match ID in the body");
             return BadRequest("ID mismatch");
         }
         
         var validationResult = await _authorValidator.ValidateAsync(author);
         if (!validationResult.IsValid)
         {
-            _logger.LogWarning("Product data is invalid");
+            _logger.LogWarning("Author data is invalid");
             return BadRequest(validationResult.Errors);
         }
         
@@ -84,7 +84,7 @@ public class AuthorController(
         return NoContent();
     }
     
-    // DELETE: api/product/{id}
+    // DELETE: api/author/{id}
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAsync(Guid id)
     {

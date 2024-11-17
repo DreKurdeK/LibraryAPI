@@ -29,7 +29,7 @@ public class BookController(
         return Ok(books);
     }
 
-    // GET: api/product/{id}
+    // GET: api/book/{id}
     [HttpGet("{id}")]
     public async Task<ActionResult<Book>> GetByIdAsync(Guid id)
     {
@@ -44,7 +44,7 @@ public class BookController(
         return Ok(book);
     }
     
-    // POST: api/product
+    // POST: api/book
     [HttpPost]
     public async Task<ActionResult<BookDto>> AddAsync(BookDto? bookDto)
     {
@@ -62,20 +62,20 @@ public class BookController(
         return Created();
     }
     
-    // PUT: api/product/{id}
+    // PUT: api/book/{id}
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateAsync(Guid id, Book book)
     {
         if (id != book.Id)
         {
-            _logger.LogWarning("Product ID in the route does not match ID in the body");
+            _logger.LogWarning("Book ID in the route does not match ID in the body");
             return BadRequest("ID mismatch");
         }
         
         var validationResult = await _bookValidator.ValidateAsync(book);
         if (!validationResult.IsValid)
         {
-            _logger.LogWarning("Product data is invalid");
+            _logger.LogWarning("Book data is invalid");
             return BadRequest(validationResult.Errors);
         }
         
@@ -83,7 +83,7 @@ public class BookController(
         return NoContent();
     }
     
-    // DELETE: api/product/{id}
+    // DELETE: api/book/{id}
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAsync(Guid id)
     {

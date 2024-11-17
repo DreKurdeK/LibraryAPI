@@ -29,7 +29,7 @@ public class PublisherController(
         return Ok(publishers);
     }
 
-    // GET: api/product/{id}
+    // GET: api/publisher/{id}
     [HttpGet("{id}")]
     public async Task<ActionResult<Publisher>> GetByIdAsync(Guid id)
     {
@@ -44,7 +44,7 @@ public class PublisherController(
         return Ok(publisher);
     }
     
-    // POST: api/product
+    // POST: api/publisher
     [HttpPost]
     public async Task<ActionResult<PublisherDto>> AddAsync(PublisherDto? publisherDto)
     {
@@ -62,20 +62,20 @@ public class PublisherController(
         return Created();
     }
     
-    // PUT: api/product/{id}
+    // PUT: api/publisher/{id}
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateAsync(Guid id, Publisher publisher)
     {
         if (id != publisher.Id)
         {
-            _logger.LogWarning("Product ID in the route does not match ID in the body");
+            _logger.LogWarning("Publisher ID in the route does not match ID in the body");
             return BadRequest("ID mismatch");
         }
         
         var validationResult = await _publisherValidator.ValidateAsync(publisher);
         if (!validationResult.IsValid)
         {
-            _logger.LogWarning("Product data is invalid");
+            _logger.LogWarning("Publisher data is invalid");
             return BadRequest(validationResult.Errors);
         }
         
@@ -83,7 +83,7 @@ public class PublisherController(
         return NoContent();
     }
     
-    // DELETE: api/product/{id}
+    // DELETE: api/publisher/{id}
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAsync(Guid id)
     {
