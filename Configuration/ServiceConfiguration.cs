@@ -1,12 +1,10 @@
-﻿using System.Diagnostics.Eventing.Reader;
-using FluentValidation;
-using FluentValidation.AspNetCore;
+﻿using FluentValidation;
 using LibraryAPI.Data;
 using LibraryAPI.Helpers;
 using LibraryAPI.Repositories;
+using LibraryAPI.Services;
 using LibraryAPI.Validators;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace LibraryAPI.Configuration;
 
@@ -31,9 +29,14 @@ public static class ServiceConfiguration
         services.AddValidatorsFromAssemblyContaining<AuthorValidator>();
         services.AddValidatorsFromAssemblyContaining<PublisherValidator>();
         
+        services.AddScoped<IBookService, BookService>();
+        services.AddScoped<IAuthorService, AuthorService>();
+        services.AddScoped<IPublisherService, PublisherService>();
+
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IPublisherRepository, PublisherRepository>();
         
+        services.AddControllers();
     }
 }
