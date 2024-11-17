@@ -1,0 +1,22 @@
+﻿@url = http://localhost:5000
+@bookId = 98978885-5557-4439-8dac-0bbd3aae1955
+@authorId = b3761022-4903-4191-ba96-0bcee890760c
+@publisherId = 94c12265-789e-4c87-a585-7958c6a5cc71
+
+###
+GET {{url}}/api/book
+
+###
+GET {{url}}/api/book/{{bookId}}
+
+### 
+GET {{url}}/api/author
+
+### 
+GET {{url}}/api/author/{{authorId}}
+
+### 
+GET {{url}}/api/publisher
+
+### 
+GET {{url}}/api/publisher/{{publisherId}}
