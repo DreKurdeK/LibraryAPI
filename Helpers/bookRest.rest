@@ -20,3 +20,79 @@ GET {{url}}/api/publisher
 
 ### 
 GET {{url}}/api/publisher/{{publisherId}}
+
+###
+POST {{url}}/api/book
+Content-Type: application/json
+
+{
+  "title": "New book",
+  "isbn": "9783161484100",
+  "authorId": "{{authorId}}",
+  "publisherId": "{{publisherId}}",
+  "releaseDate": "2024-11-16"
+}
+
+###
+POST {{url}}/api/author
+Content-Type: application/json
+
+{
+  "firstName": "William",
+  "lastName": "Shakespeare",
+  "dateOfBirth": "1564-04-23"
+}
+
+###
+POST {{url}}/api/publisher
+Content-Type: application/json
+
+{
+  "name": "Expertia",
+  "address": "342 Example St, Washington, WA",
+  "foundedYear": 1995
+}
+
+###
+PUT {{url}}/api/book/{{bookId}}
+Content-Type: application/json
+
+{
+  "title": "Updated Book",
+  "isbn": "1234567891234",
+  "authorId": "{{authorId}}",
+  "publisherId": "{{publisherId}}",
+  "publicationDate": "2024-12-01"
+}
+
+###
+PUT {{url}}/api/author/{{authorId}}
+
+Content-Type: application/json
+{
+  "firstName": "FirstName",
+  "lastName": "LastName",
+  "dateOfBirth": "1980-05-10"
+}
+
+###
+PUT {{url}}/api/publisher/{{publisherId}}
+Content-Type: application/json
+
+{
+  "name": "New publisher",
+  "address": "231 Updated St, Washington, WA",
+  "foundedYear": 2000
+}
+
+###
+DELETE {{url}}/api/book/{{bookId}}
+
+###
+DELETE {{url}}/api/author/{{authorId}}
+
+###
+DELETE {{url}}/api/publisher/{{publisherId}}
+
+
+
