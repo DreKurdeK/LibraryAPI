@@ -9,7 +9,6 @@ namespace LibraryAPI.Services;
 
 public class AuthorService(
     IAuthorRepository authorRepository, 
-    IMapper mapper,
     IValidator<AuthorDto> authorDtoValidator,
     IValidator<Author> authorValidator,
     ILogger<AuthorService> logger) : IAuthorService
