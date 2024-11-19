@@ -62,7 +62,7 @@ public class AuthorController(
 
     // PUT: api/author/{id}
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateAsync(Guid id, AuthorDto authorDto)
+    public async Task<ActionResult> UpdateAsync(Guid id, [FromBody] AuthorDto authorDto)
     {
         if (id != authorDto.Id)
         {

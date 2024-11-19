@@ -63,7 +63,7 @@ public class BookController(
 
     // PUT: api/book/{id}
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateAsync(Guid id, BookDto bookDto)
+    public async Task<ActionResult> UpdateAsync(Guid id, [FromBody] BookDto bookDto)
     {
         if (id != bookDto.Id)
         {

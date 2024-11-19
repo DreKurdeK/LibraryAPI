@@ -61,7 +61,7 @@ public class PublisherController(
 
     // PUT: api/publisher/{id}
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateAsync(Guid id, PublisherDto publisherDto)
+    public async Task<ActionResult> UpdateAsync(Guid id, [FromBody] PublisherDto publisherDto)
     {
         if (id != publisherDto.Id)
         {
