@@ -9,13 +9,9 @@ namespace LibraryAPI.Services;
 
 public class AuthorService(
     IAuthorRepository authorRepository, 
-    IValidator<AuthorDto> authorDtoValidator,
-    IValidator<Author> authorValidator,
     ILogger<AuthorService> logger) : IAuthorService
 {
     private readonly IAuthorRepository _authorRepository = authorRepository;
-    private readonly IValidator<AuthorDto> _authorDtoValidator = authorDtoValidator;
-    private readonly IValidator<Author> _authorValidator = authorValidator;
     private readonly ILogger<AuthorService> _logger = logger;
 
     
@@ -57,15 +53,7 @@ public class AuthorService(
     {
         try
         {
-            var validationResult = await _authorDtoValidator.ValidateAsync(authorDto);
-            if (!validationResult.IsValid)
-            {
-                _logger.LogWarning("Invalid author data provided.");
-                throw new Exception("Author data is invalid.");
-            }
-            
             await _authorRepository.AddAsync(authorDto);
-
             _logger.LogInformation("Author added successfully.");
         }
         catch (Exception ex)
@@ -75,19 +63,11 @@ public class AuthorService(
         }
     }
 
-    public async Task UpdateAsync(Author author)
+    public async Task UpdateAsync(AuthorDto authorDto)
     {
         try
         {
-            var validationResult = await _authorValidator.ValidateAsync(author);
-            if (!validationResult.IsValid)
-            {
-                _logger.LogWarning("Invalid author data provided.");
-                throw new Exception("Author data is invalid.");
-            }
-
-            await _authorRepository.UpdateAsync(author);
-
+            await _authorRepository.UpdateAsync(authorDto);
             _logger.LogInformation("Author updated successfully.");
         }
         catch (Exception ex)

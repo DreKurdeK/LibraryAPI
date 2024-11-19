@@ -8,6 +8,6 @@ public interface IAuthorRepository
     Task<List<Author>> GetAllAuthorsAsync();
     Task<Author?> GetByIdAsync(Guid id);
     Task AddAsync(AuthorDto authorDto);
-    Task UpdateAsync(Author author);
+    Task UpdateAsync(AuthorDto authorDto);
     Task DeleteAsync(Guid id);
 }

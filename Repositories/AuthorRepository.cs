@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LibraryAPI.Data;
 using LibraryAPI.DTOs;
+using LibraryAPI.Exceptions;
 using LibraryAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,16 +30,22 @@ public class AuthorRepository(LibraryDbContext dbContext, IMapper mapper) : IAut
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(Author author)
+    public async Task UpdateAsync(AuthorDto authorDto)
     {
-        var authorUpdated = await _dbContext.Authors.FindAsync(author.Id);
-        if (authorUpdated != null)
+        if (authorDto.Id == Guid.Empty) throw new NullReferenceException("Author Id is required");
+
+        var authorToUpdate = await _dbContext.Authors.FindAsync(authorDto.Id);
+        if (authorToUpdate == null)
         {
-            _mapper.Map(author, authorUpdated);
-            _dbContext.Authors.Update(authorUpdated);
-            await _dbContext.SaveChangesAsync();
+            throw new AuthorNotFoundException(authorDto.Id);
         }
+
+        _mapper.Map(authorDto, authorToUpdate);
+
+        _dbContext.Authors.Update(authorToUpdate);
+        await _dbContext.SaveChangesAsync();
     }
+
 
     public async Task DeleteAsync(Guid id)
     {

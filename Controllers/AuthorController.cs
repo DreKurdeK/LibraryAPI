@@ -12,14 +12,12 @@ namespace LibraryAPI.Controllers;
 public class AuthorController(
     IAuthorService authorService,
     ILogger<AuthorController> logger,
-    IValidator<AuthorDto> authorDtoValidator,
-    IValidator<Author> authorValidator
+    IValidator<AuthorDto> authorValidator
     ) : ControllerBase
 {
     private readonly IAuthorService _authorService = authorService;
     private readonly ILogger<AuthorController> _logger = logger;
-    private readonly IValidator<AuthorDto> _authorDtoValidator = authorDtoValidator;
-    private readonly IValidator<Author> _authorValidator = authorValidator;
+    private readonly IValidator<AuthorDto> _authorValidator = authorValidator;
     
     // GET: api/author
     [HttpGet]
@@ -47,40 +45,39 @@ public class AuthorController(
     
     // POST: api/author
     [HttpPost]
-    public async Task<ActionResult<AuthorDto>> AddAsync(AuthorDto? authorDto)
+    public async Task<ActionResult> AddAsync(AuthorDto authorDto)
     {
-        if (authorDto is null) return BadRequest();
-        _logger.LogInformation("Adding author: {author}", authorDto);
-
-        var validationResult = await _authorDtoValidator.ValidateAsync(authorDto);
+        if (authorDto == null) return BadRequest("Author data is required.");
+        
+        var validationResult = await _authorValidator.ValidateAsync(authorDto);
         if (!validationResult.IsValid)
         {
             _logger.LogWarning("Author data is invalid");
             return BadRequest(validationResult.Errors);
         }
-        
+
         await _authorService.AddAsync(authorDto);
-        return Created();
+        return CreatedAtAction(nameof(AddAsync), new { id = authorDto.Id }, authorDto);
     }
-    
+
     // PUT: api/author/{id}
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateAsync(Guid id, Author author)
+    public async Task<ActionResult> UpdateAsync(Guid id, AuthorDto authorDto)
     {
-        if (id != author.Id)
+        if (id != authorDto.Id)
         {
             _logger.LogWarning("Author ID in the route does not match ID in the body");
             return BadRequest("ID mismatch");
         }
-        
-        var validationResult = await _authorValidator.ValidateAsync(author);
+
+        var validationResult = await _authorValidator.ValidateAsync(authorDto);
         if (!validationResult.IsValid)
         {
             _logger.LogWarning("Author data is invalid");
             return BadRequest(validationResult.Errors);
         }
-        
-        await _authorService.UpdateAsync(author);
+
+        await _authorService.UpdateAsync(authorDto);
         return NoContent();
     }
     

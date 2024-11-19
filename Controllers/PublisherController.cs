@@ -11,14 +11,12 @@ namespace LibraryAPI.Controllers;
 public class PublisherController(
     IPublisherService publisherService,
     ILogger<PublisherController> logger,
-    IValidator<PublisherDto> publisherDtoValidator,
-    IValidator<Publisher> publisherValidator
+    IValidator<PublisherDto> publisherValidator
     ) : ControllerBase
 {
     private readonly IPublisherService _publisherService = publisherService;
     private readonly ILogger<PublisherController> _logger = logger;
-    private readonly IValidator<PublisherDto> _publisherDtoValidator = publisherDtoValidator;
-    private readonly IValidator<Publisher> _publisherValidator = publisherValidator;
+    private readonly IValidator<PublisherDto> _publisherValidator = publisherValidator;
     
     // GET: api/publisher
     [HttpGet]
@@ -46,40 +44,39 @@ public class PublisherController(
     
     // POST: api/publisher
     [HttpPost]
-    public async Task<ActionResult<PublisherDto>> AddAsync(PublisherDto? publisherDto)
+    public async Task<ActionResult> AddAsync(PublisherDto publisherDto)
     {
-        if (publisherDto is null) return BadRequest();
-        _logger.LogInformation("Adding publisher: {publisher}", publisherDto);
-
-        var validationResult = await _publisherDtoValidator.ValidateAsync(publisherDto);
+        if (publisherDto == null) return BadRequest("Publisher data is required.");
+        
+        var validationResult = await _publisherValidator.ValidateAsync(publisherDto);
         if (!validationResult.IsValid)
         {
             _logger.LogWarning("Publisher data is invalid");
             return BadRequest(validationResult.Errors);
         }
-        
+
         await _publisherService.AddAsync(publisherDto);
-        return Created();
+        return CreatedAtAction(nameof(AddAsync), new { id = publisherDto.Id }, publisherDto);
     }
-    
+
     // PUT: api/publisher/{id}
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateAsync(Guid id, Publisher publisher)
+    public async Task<ActionResult> UpdateAsync(Guid id, PublisherDto publisherDto)
     {
-        if (id != publisher.Id)
+        if (id != publisherDto.Id)
         {
             _logger.LogWarning("Publisher ID in the route does not match ID in the body");
             return BadRequest("ID mismatch");
         }
-        
-        var validationResult = await _publisherValidator.ValidateAsync(publisher);
+
+        var validationResult = await _publisherValidator.ValidateAsync(publisherDto);
         if (!validationResult.IsValid)
         {
             _logger.LogWarning("Publisher data is invalid");
             return BadRequest(validationResult.Errors);
         }
-        
-        await _publisherService.UpdateAsync(publisher);
+
+        await _publisherService.UpdateAsync(publisherDto);
         return NoContent();
     }
     

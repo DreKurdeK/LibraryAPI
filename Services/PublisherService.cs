@@ -8,15 +8,10 @@ namespace LibraryAPI.Services;
 
 public class PublisherService(
     IPublisherRepository publisherRepository,
-    ILogger<BookService> logger,
-    IValidator<Publisher> publisherValidator,
-    IValidator<PublisherDto> publisherDtoValidator) : IPublisherService
+    ILogger<BookService> logger) : IPublisherService
 {
     private readonly IPublisherRepository _publisherRepository = publisherRepository;
     private readonly ILogger<BookService> _logger = logger;
-    private readonly IValidator<Publisher> _publisherValidator = publisherValidator;
-    private readonly IValidator<PublisherDto> _publisherDtoValidator = publisherDtoValidator;
-
     public async Task<List<Publisher>> GetAllPublishersAsync()
     {
         try
@@ -50,20 +45,12 @@ public class PublisherService(
             throw new Exception("An error occurred while fetching publisher.", ex);
         }
     }
-
+    
     public async Task AddAsync(PublisherDto publisherDto)
     {
         try
         {
-            var validationResult = await _publisherDtoValidator.ValidateAsync(publisherDto);
-            if (!validationResult.IsValid)
-            {
-                _logger.LogWarning("Invalid publisher data provided.");
-                throw new Exception("Publisher data is invalid.");
-            }
-            
             await _publisherRepository.AddAsync(publisherDto);
-
             _logger.LogInformation("Publisher added successfully.");
         }
         catch (Exception ex)
@@ -73,19 +60,11 @@ public class PublisherService(
         }
     }
 
-    public async Task UpdateAsync(Publisher publisher)
+    public async Task UpdateAsync(PublisherDto publisherDto)
     {
         try
         {
-            var validationResult = await _publisherValidator.ValidateAsync(publisher);
-            if (!validationResult.IsValid)
-            {
-                _logger.LogWarning("Invalid publisher data provided.");
-                throw new Exception("Publisher data is invalid.");
-            }
-
-            await _publisherRepository.UpdateAsync(publisher);
-
+            await _publisherRepository.UpdateAsync(publisherDto);
             _logger.LogInformation("Publisher updated successfully.");
         }
         catch (Exception ex)
