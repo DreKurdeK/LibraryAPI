@@ -6,8 +6,9 @@ public static class DbInitializer
 {
     public static async Task InitializeAsync(LibraryDbContext dbContext)
     {
+        // await dbContext.Database.EnsureDeletedAsync();
         await dbContext.Database.EnsureCreatedAsync();
-
+        
         if (dbContext.Books.Any() || dbContext.Authors.Any() || dbContext.Publishers.Any())
         {
             return;
@@ -18,23 +19,37 @@ public static class DbInitializer
             new Author
             {
                 Id = Guid.NewGuid(),
-                FirstName = "John",
-                LastName = "Doe",
-                DateOfBirth = new DateTime(1975, 5, 20)
+                FirstName = "J.K.",
+                LastName = "Rowling",
+                DateOfBirth = new DateTime(1965, 7, 31)
             },
             new Author
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Jane",
-                LastName = "Smith",
-                DateOfBirth = new DateTime(1980, 11, 15)
+                FirstName = "George",
+                LastName = "Orwell",
+                DateOfBirth = new DateTime(1903, 6, 25)
             },
             new Author
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Emily",
-                LastName = "Bronte",
-                DateOfBirth = new DateTime(1818, 7, 30)
+                FirstName = "Mark",
+                LastName = "Twain",
+                DateOfBirth = new DateTime(1835, 11, 30)
+            },
+            new Author
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Agatha",
+                LastName = "Christie",
+                DateOfBirth = new DateTime(1890, 9, 15)
+            },
+            new Author
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "J.R.R.",
+                LastName = "Tolkien",
+                DateOfBirth = new DateTime(1892, 1, 3)
             }
         };
         dbContext.Authors.AddRange(authors);
@@ -44,9 +59,9 @@ public static class DbInitializer
             new Publisher
             {
                 Id = Guid.NewGuid(),
-                Name = "Penguin Books",
-                Address = "375 Hudson St, New York, NY",
-                FoundedYear = 1935
+                Name = "Penguin Random House",
+                Address = "1745 Broadway, New York, NY",
+                FoundedYear = 1927
             },
             new Publisher
             {
@@ -54,45 +69,86 @@ public static class DbInitializer
                 Name = "HarperCollins",
                 Address = "195 Broadway, New York, NY",
                 FoundedYear = 1989
+            },
+            new Publisher
+            {
+                Id = Guid.NewGuid(),
+                Name = "Simon & Schuster",
+                Address = "1230 Avenue of the Americas, New York, NY",
+                FoundedYear = 1924
+            },
+            new Publisher
+            {
+                Id = Guid.NewGuid(),
+                Name = "Macmillan",
+                Address = "120 Broadway, New York, NY",
+                FoundedYear = 1843
+            },
+            new Publisher
+            {
+                Id = Guid.NewGuid(),
+                Name = "Hachette Book Group",
+                Address = "1290 Avenue of the Americas, New York, NY",
+                FoundedYear = 2006
             }
         };
         dbContext.Publishers.AddRange(publishers);
-        
+
         var books = new List<Book>
         {
             new Book
             {
                 Id = Guid.NewGuid(),
-                Title = "Mystery of the Haunted House",
-                ISBN = "978-1-2345-6789-0",
-                Category = BookCategory.Mystery,
+                Title = "Harry Potter and the Philosopher's Stone",
+                ISBN = "978-0-7475-3269-9",
+                Category = BookCategory.Fantasy,
                 AuthorId = authors[0].Id,
                 PublisherId = publishers[0].Id,
-                ReleaseDate = new DateTime(2005, 6, 15)
+                ReleaseDate = new DateTime(1997, 6, 26)
             },
             new Book
             {
                 Id = Guid.NewGuid(),
-                Title = "The Science of Nature",
-                ISBN = "978-0-1234-5678-9",
-                Category = BookCategory.Science,
+                Title = "1984",
+                ISBN = "978-0-452-28423-4",
+                Category = BookCategory.NonFiction,
                 AuthorId = authors[1].Id,
                 PublisherId = publishers[1].Id,
-                ReleaseDate = new DateTime(2012, 9, 22)
+                ReleaseDate = new DateTime(1949, 6, 8)
             },
             new Book
             {
                 Id = Guid.NewGuid(),
-                Title = "Life and Biography",
-                ISBN = "978-9-8765-4321-0",
-                Category = BookCategory.Biography,
+                Title = "Adventures of Huckleberry Finn",
+                ISBN = "978-0-141-43915-3",
+                Category = BookCategory.Fantasy,
                 AuthorId = authors[2].Id,
-                PublisherId = publishers[0].Id,
-                ReleaseDate = new DateTime(2008, 3, 10)
+                PublisherId = publishers[2].Id,
+                ReleaseDate = new DateTime(1884, 12, 10)
+            },
+            new Book
+            {
+                Id = Guid.NewGuid(),
+                Title = "Murder on the Orient Express",
+                ISBN = "978-0-006-29868-6",
+                Category = BookCategory.Mystery,
+                AuthorId = authors[3].Id,
+                PublisherId = publishers[3].Id,
+                ReleaseDate = new DateTime(1934, 1, 1)
+            },
+            new Book
+            {
+                Id = Guid.NewGuid(),
+                Title = "The Hobbit",
+                ISBN = "978-0-618-00221-3",
+                Category = BookCategory.Fantasy,
+                AuthorId = authors[4].Id,
+                PublisherId = publishers[4].Id,
+                ReleaseDate = new DateTime(1937, 9, 21)
             }
         };
         dbContext.Books.AddRange(books);
-        
+
         await dbContext.SaveChangesAsync();
     }
 }
