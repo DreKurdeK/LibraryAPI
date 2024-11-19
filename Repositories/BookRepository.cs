@@ -26,8 +26,7 @@ public class BookRepository(LibraryDbContext dbContext, IMapper mapper) : IBookR
     {
         var book = _mapper.Map<Book>(bookDto);
         book.Id = Guid.NewGuid();
-    
-        // Pobranie Author i Publisher na podstawie Id
+        
         var author = await _dbContext.Authors.FindAsync(bookDto.AuthorId);
         var publisher = await _dbContext.Publishers.FindAsync(bookDto.PublisherId);
     
