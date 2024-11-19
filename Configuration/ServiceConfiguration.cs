@@ -35,10 +35,6 @@ public static class ServiceConfiguration
         
         
         services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
-        
-        services.AddValidatorsFromAssemblyContaining<BookValidator>();
-        services.AddValidatorsFromAssemblyContaining<AuthorValidator>();
-        services.AddValidatorsFromAssemblyContaining<PublisherValidator>();
 
         services.AddScoped<IBookService, BookService>();
         services.AddScoped<IAuthorService, AuthorService>();
