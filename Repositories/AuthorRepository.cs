@@ -12,7 +12,7 @@ public class AuthorRepository(LibraryDbContext dbContext, IMapper mapper) : IAut
     private readonly LibraryDbContext _dbContext = dbContext;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<PagedResult<Author>> GetAllAuthorsAsync(int pageNumber, int pageSize, string sortBy = "LastName", bool ascending = true)
+    public async Task<PagedResult<Author>> GetAllAuthorsAsync(int pageNumber, int pageSize, string sortBy, bool ascending)
     {
         var query = _dbContext.Authors.AsQueryable();
 

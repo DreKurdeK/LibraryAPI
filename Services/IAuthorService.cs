@@ -5,8 +5,8 @@ namespace LibraryAPI.Services;
 
 public interface IAuthorService
 {
-    Task<PagedResult<Author>> GetAllAuthorsAsync(int pageNumber, int pageSize, string sortBy = "LastName",
-        bool ascending = true);
+    Task<PagedResult<Author>> GetAllAuthorsAsync(int pageNumber, int pageSize, string sortBy,
+        bool ascending);
     Task<Author?> GetByIdAsync(Guid id);
     Task AddAsync(AuthorDto authorDto);
     Task UpdateAsync(AuthorDto authorDto);

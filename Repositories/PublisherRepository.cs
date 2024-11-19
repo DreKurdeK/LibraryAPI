@@ -12,7 +12,7 @@ public class PublisherRepository(LibraryDbContext dbContext, IMapper mapper) : I
     private readonly LibraryDbContext _dbContext = dbContext;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<PagedResult<Publisher>> GetAllPublishersAsync(int pageNumber, int pageSize, string sortBy = "Name", bool ascending = true)
+    public async Task<PagedResult<Publisher>> GetAllPublishersAsync(int pageNumber, int pageSize, string sortBy, bool ascending)
     {
         var query = _dbContext.Publishers.AsQueryable();
         

@@ -11,7 +11,7 @@ public class BookRepository(LibraryDbContext dbContext, IMapper mapper) : IBookR
 {
     private readonly LibraryDbContext _dbContext = dbContext;
     private readonly IMapper _mapper = mapper;
-    public async Task<PagedResult<Book>> GetAllBooksAsync(int pageNumber, int pageSize, string sortBy = "Title", bool ascending = true)
+    public async Task<PagedResult<Book>> GetAllBooksAsync(int pageNumber, int pageSize, string sortBy, bool ascending)
     {
         var query = _dbContext.Books.AsQueryable();
 

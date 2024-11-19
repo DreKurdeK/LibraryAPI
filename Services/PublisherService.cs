@@ -13,7 +13,11 @@ public class PublisherService(
     private readonly IPublisherRepository _publisherRepository = publisherRepository;
     private readonly ILogger<BookService> _logger = logger;
     
-    public async Task<PagedResult<Publisher>> GetAllPublishersAsync(int pageNumber, int pageSize, string sortBy = "Name", bool ascending = true)
+    public async Task<PagedResult<Publisher>> GetAllPublishersAsync(
+        int pageNumber, 
+        int pageSize, 
+        string sortBy, 
+        bool ascending)
     {
         try
         {

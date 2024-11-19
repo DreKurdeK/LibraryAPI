@@ -14,7 +14,7 @@ public class AuthorService(
     private readonly IAuthorRepository _authorRepository = authorRepository;
     private readonly ILogger<AuthorService> _logger = logger;
 
-    public async Task<PagedResult<Author>> GetAllAuthorsAsync(int pageNumber, int pageSize, string sortBy = "LastName", bool ascending = true)
+    public async Task<PagedResult<Author>> GetAllAuthorsAsync(int pageNumber, int pageSize, string sortBy, bool ascending)
     {
         try
         {

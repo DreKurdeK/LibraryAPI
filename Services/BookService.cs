@@ -14,7 +14,7 @@ public class BookService(
     private readonly IBookRepository _bookRepository = bookRepository;
     private readonly ILogger<BookService> _logger = logger;
 
-    public async Task<PagedResult<Book>> GetAllBooksAsync(int pageNumber, int pageSize, string sortBy = "Title", bool ascending = true)
+    public async Task<PagedResult<Book>> GetAllBooksAsync(int pageNumber, int pageSize, string sortBy, bool ascending)
     {
         try
         {
