@@ -1,7 +1,7 @@
 ﻿@url = http://localhost:5000
-@bookId = 98978885-5557-4439-8dac-0bbd3aae1955
-@authorId = b3761022-4903-4191-ba96-0bcee890760c
-@publisherId = 94c12265-789e-4c87-a585-7958c6a5cc71
+@bookId = 9d9ae4a6-46e6-41c8-b669-22bcd4e7960f
+@authorId = 478658de-0f4e-4f11-bbcd-4917b8c177bb
+@publisherId = d5c1eb83-5e9a-4973-b845-669ae60076f6
 
 ###
 GET {{url}}/api/book
@@ -58,18 +58,20 @@ PUT {{url}}/api/book/{{bookId}}
 Content-Type: application/json
 
 {
+  "id": "{{bookId}}",
   "title": "Updated Book",
   "isbn": "1234567891234",
   "authorId": "{{authorId}}",
   "publisherId": "{{publisherId}}",
-  "publicationDate": "2024-12-01"
+  "releaseDate": "2024-10-01"
 }
 
 ###
 PUT {{url}}/api/author/{{authorId}}
-
 Content-Type: application/json
+
 {
+  "id": "{{authorId}}",
   "firstName": "FirstName",
   "lastName": "LastName",
   "dateOfBirth": "1980-05-10"
@@ -80,6 +82,7 @@ PUT {{url}}/api/publisher/{{publisherId}}
 Content-Type: application/json
 
 {
+  "id": "{{publisherId}}",
   "name": "New publisher",
   "address": "231 Updated St, Washington, WA",
   "foundedYear": 2000
