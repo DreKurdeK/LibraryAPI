@@ -38,10 +38,13 @@ public class BookRepository(LibraryDbContext dbContext, IMapper mapper) : IBookR
             query = ascending ? query.OrderBy(p => p.Title) : query.OrderByDescending(p => p.Title);
         }
         
+        
         // Pagination 
         var totalItems = await query.CountAsync();
         var books = await query.Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
+            .Include(p => p.Author)
+            .Include(p => p.Publisher)
             .ToListAsync();
 
         return new PagedResult<Book>
