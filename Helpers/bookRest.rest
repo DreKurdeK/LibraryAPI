@@ -7,6 +7,9 @@
 GET {{url}}/api/book
 
 ###
+GET {{url}}/api/book?pageNumber=1&pageSize=5&sortBy=author
+    
+###
 GET {{url}}/api/book/{{bookId}}
 
 ### 
