@@ -15,6 +15,7 @@ public class BookRepository(LibraryDbContext dbContext, IMapper mapper) : IBookR
     {
         var query = _dbContext.Books.AsQueryable();
 
+        // Key for sorting query
         Dictionary<string, Func<IQueryable<Book>, bool, IOrderedQueryable<Book>>> sortOptions = new Dictionary<string, Func<IQueryable<Book>, bool, IOrderedQueryable<Book>>>
         {
             { "title", (query, ascending) => ascending ? query.OrderBy(p => p.Title) : query.OrderByDescending(p => p.Title) },
@@ -24,8 +25,10 @@ public class BookRepository(LibraryDbContext dbContext, IMapper mapper) : IBookR
             { "releasedate", (query, ascending) => ascending ? query.OrderBy(p => p.ReleaseDate) : query.OrderByDescending(p => p.ReleaseDate) }
         };
         
+        // Be case-insensitive
         string sortKey = sortBy.ToLower();
         
+        // Sort by key or by default (title)
         if (sortOptions.ContainsKey(sortKey))
         {
             query = sortOptions[sortKey](query, ascending);
@@ -35,8 +38,8 @@ public class BookRepository(LibraryDbContext dbContext, IMapper mapper) : IBookR
             query = ascending ? query.OrderBy(p => p.Title) : query.OrderByDescending(p => p.Title);
         }
         
+        // Pagination 
         var totalItems = await query.CountAsync();
-        
         var books = await query.Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

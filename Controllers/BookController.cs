@@ -21,13 +21,16 @@ public class BookController(
     
     // GET: api/book
     [HttpGet]
-    public async Task<ActionResult<PagedResult<Book>>> GetAllBooksAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string sortBy = "Title", [FromQuery] bool ascending = true)
+    public async Task<ActionResult<PagedResult<Book>>> GetAllBooksAsync(
+        [FromQuery] int pageNumber = 1, 
+        [FromQuery] int pageSize = 10, 
+        [FromQuery] string sortBy = "Title", 
+        [FromQuery] bool ascending = true)
     {
         _logger.LogInformation("Fetching books from service.");
 
         try
         {
-            // Call service to get paginated and sorted books
             var result = await _bookService.GetAllBooksAsync(pageNumber, pageSize, sortBy, ascending);
 
             _logger.LogInformation($"Successfully fetched {result.Items.Count()} books.");

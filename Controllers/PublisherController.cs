@@ -20,12 +20,28 @@ public class PublisherController(
     
     // GET: api/publisher
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Publisher>>> GetAllPublishersAsync()
+    public async Task<ActionResult<PagedResult<Publisher>>> GetAllPublishersAsync(
+        [FromQuery] int pageNumber = 1, 
+        [FromQuery] int pageSize = 10, 
+        [FromQuery] string sortBy = "Name", 
+        [FromQuery] bool ascending = true)
     {
-        _logger.LogInformation("Fetching all publishers");
-        var publishers = await _publisherService.GetAllPublishersAsync();
-        return Ok(publishers);
+        _logger.LogInformation("Fetching publishers from service.");
+
+        try
+        {
+            var result = await _publisherService.GetAllPublishersAsync(pageNumber, pageSize, sortBy, ascending);
+
+            _logger.LogInformation($"Successfully fetched {result.Items.Count()} publishers.");
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while fetching publishers.");
+            return StatusCode(500, "An error occurred while fetching publishers.");
+        }
     }
+
 
     // GET: api/publisher/{id}
     [HttpGet("{id}")]

@@ -12,12 +12,19 @@ public class PublisherService(
 {
     private readonly IPublisherRepository _publisherRepository = publisherRepository;
     private readonly ILogger<BookService> _logger = logger;
-    public async Task<List<Publisher>> GetAllPublishersAsync()
+    
+    public async Task<PagedResult<Publisher>> GetAllPublishersAsync(int pageNumber, int pageSize, string sortBy = "Name", bool ascending = true)
     {
         try
         {
-            _logger.LogInformation("Fetching all publishers.");
-            return await _publisherRepository.GetAllPublishersAsync();
+            _logger.LogInformation("Fetching publishers from repository.");
+
+            // Wywołanie repozytorium z parametrami sortowania, paginacji
+            var result = await _publisherRepository.GetAllPublishersAsync(pageNumber, pageSize, sortBy, ascending);
+
+            _logger.LogInformation($"Fetched {result.Items.Count()} publishers.");
+
+            return result;
         }
         catch (Exception ex)
         {

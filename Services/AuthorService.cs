@@ -14,6 +14,24 @@ public class AuthorService(
     private readonly IAuthorRepository _authorRepository = authorRepository;
     private readonly ILogger<AuthorService> _logger = logger;
 
+    public async Task<PagedResult<Author>> GetAllAuthorsAsync(int pageNumber, int pageSize, string sortBy = "LastName", bool ascending = true)
+    {
+        try
+        {
+            _logger.LogInformation("Fetching authors from repository.");
+            
+            var result = await _authorRepository.GetAllAuthorsAsync(pageNumber, pageSize, sortBy, ascending);
+
+            _logger.LogInformation($"Fetched {result.Items.Count()} authors.");
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while fetching authors.");
+            throw new Exception("An error occurred while fetching authors.", ex);
+        }
+    }
     
     public async Task<Author?> GetByIdAsync(Guid id)
     {
@@ -32,20 +50,6 @@ public class AuthorService(
         {
             _logger.LogError(ex, "Error occurred while fetching author.");
             throw new Exception("An error occurred while fetching author.", ex);
-        }
-    }
-
-    public async Task<List<Author>> GetAllAuthorsAsync()
-    {
-        try
-        {
-            _logger.LogInformation("Fetching all authors.");
-            return await _authorRepository.GetAllAuthorsAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error occurred while fetching authors.");
-            throw new Exception("An error occurred while fetching authors.", ex);
         }
     }
 

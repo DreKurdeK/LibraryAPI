@@ -5,7 +5,8 @@ namespace LibraryAPI.Repositories;
 
 public interface IPublisherRepository
 {
-    Task<List<Publisher>> GetAllPublishersAsync();
+    Task<PagedResult<Publisher>> GetAllPublishersAsync(int pageNumber, int pageSize, string sortBy = "Name",
+        bool ascending = true);
     Task<Publisher?> GetByIdAsync(Guid id);
     Task AddAsync(PublisherDto publisher);
     Task UpdateAsync(PublisherDto publisherDto);

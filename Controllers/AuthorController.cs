@@ -21,11 +21,26 @@ public class AuthorController(
     
     // GET: api/author
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Author>>> GetAllAuthorsAsync()
+    public async Task<ActionResult<PagedResult<Author>>> GetAllAuthorsAsync(
+        [FromQuery] int pageNumber = 1, 
+        [FromQuery] int pageSize = 10, 
+        [FromQuery] string sortBy = "LastName", 
+        [FromQuery] bool ascending = true)
     {
-        _logger.LogInformation("Fetching all authors");
-        var authors = await _authorService.GetAllAuthorsAsync();
-        return Ok(authors);
+        _logger.LogInformation("Fetching authors from service.");
+
+        try
+        {
+            var result = await _authorService.GetAllAuthorsAsync(pageNumber, pageSize, sortBy, ascending);
+
+            _logger.LogInformation($"Successfully fetched {result.Items.Count()} authors.");
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while fetching authors.");
+            return StatusCode(500, "An error occurred while fetching authors.");
+        }
     }
 
     // GET: api/author/{id}

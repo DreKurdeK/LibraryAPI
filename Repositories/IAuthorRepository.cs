@@ -5,7 +5,7 @@ namespace LibraryAPI.Repositories;
 
 public interface IAuthorRepository
 {
-    Task<List<Author>> GetAllAuthorsAsync();
+    Task<PagedResult<Author>> GetAllAuthorsAsync(int pageNumber, int pageSize, string sortBy = "LastName", bool ascending = true);
     Task<Author?> GetByIdAsync(Guid id);
     Task AddAsync(AuthorDto authorDto);
     Task UpdateAsync(AuthorDto authorDto);

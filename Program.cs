@@ -10,10 +10,9 @@ await ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
-app.UseExceptionHandler("/error");
-
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
@@ -21,6 +20,11 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = string.Empty;
     });
     app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/home/error");
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();

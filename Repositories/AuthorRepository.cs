@@ -12,10 +12,38 @@ public class AuthorRepository(LibraryDbContext dbContext, IMapper mapper) : IAut
     private readonly LibraryDbContext _dbContext = dbContext;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<List<Author>> GetAllAuthorsAsync()
+    public async Task<PagedResult<Author>> GetAllAuthorsAsync(int pageNumber, int pageSize, string sortBy = "LastName", bool ascending = true)
     {
-        return await _dbContext.Authors.ToListAsync();
+        var query = _dbContext.Authors.AsQueryable();
+
+        // Sorting
+        switch (sortBy.ToLower())
+        {
+            case "lastname":
+                query = ascending ? query.OrderBy(p => p.LastName) : query.OrderByDescending(p => p.LastName);
+                break;
+            case "dateofbirth":
+                query = ascending ? query.OrderBy(p => p.DateOfBirth) : query.OrderByDescending(p => p.DateOfBirth);
+                break;
+            default:
+                query = ascending ? query.OrderBy(p => p.FirstName) : query.OrderByDescending(p => p.FirstName);
+                break;
+        }
+        
+        // Pagination
+        var totalItems = await query.CountAsync();
+    
+        var authors = await query.Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Author>
+        {
+            TotalItems = totalItems,
+            Items = authors
+        };
     }
+
 
     public async Task<Author?> GetByIdAsync(Guid id)
     {

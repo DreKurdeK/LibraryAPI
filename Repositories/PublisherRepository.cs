@@ -12,10 +12,38 @@ public class PublisherRepository(LibraryDbContext dbContext, IMapper mapper) : I
     private readonly LibraryDbContext _dbContext = dbContext;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<List<Publisher>> GetAllPublishersAsync()
+    public async Task<PagedResult<Publisher>> GetAllPublishersAsync(int pageNumber, int pageSize, string sortBy = "Name", bool ascending = true)
     {
-        return await _dbContext.Publishers.ToListAsync();
+        var query = _dbContext.Publishers.AsQueryable();
+        
+        // Sorting 
+        switch (sortBy.ToLower())
+        {
+            case "foundedyear":
+                query = ascending ? query.OrderBy(p => p.FoundedYear) : query.OrderByDescending(p => p.FoundedYear);
+                break;
+            case "address":
+                query = ascending ? query.OrderBy(p => p.Address) : query.OrderByDescending(p => p.Address);
+                break;
+            default:
+                query = ascending ? query.OrderBy(p => p.Name) : query.OrderByDescending(p => p.Name);
+                break;
+        }
+
+        // Pagination
+        var totalItems = await query.CountAsync();
+    
+        var publishers = await query.Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Publisher>
+        {
+            TotalItems = totalItems,
+            Items = publishers
+        };
     }
+
 
     public async Task<Publisher?> GetByIdAsync(Guid id)
     {
