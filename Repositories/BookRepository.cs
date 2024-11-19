@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LibraryAPI.Data;
 using LibraryAPI.DTOs;
+using LibraryAPI.Exceptions;
 using LibraryAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,19 +26,46 @@ public class BookRepository(LibraryDbContext dbContext, IMapper mapper) : IBookR
     {
         var book = _mapper.Map<Book>(bookDto);
         book.Id = Guid.NewGuid();
+    
+        // Pobranie Author i Publisher na podstawie Id
+        var author = await _dbContext.Authors.FindAsync(bookDto.AuthorId);
+        var publisher = await _dbContext.Publishers.FindAsync(bookDto.PublisherId);
+    
+        if (author == null || publisher == null)
+        {
+            throw new Exception("Author or Publisher not found");
+        }
+
+        book.Author = author;
+        book.Publisher = publisher;
+
         await _dbContext.Books.AddAsync(book);
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(Book book)
+    public async Task UpdateAsync(BookDto bookDto)
     {
-        var bookUpdated = await _dbContext.Books.FindAsync(book.Id);
-        if (bookUpdated != null)
+        if (bookDto.Id == Guid.Empty) throw new NullReferenceException("Book Id is required"); 
+        
+        var bookToUpdate = await _dbContext.Books.FindAsync(bookDto.Id);
+        if (bookToUpdate == null)
         {
-            _mapper.Map(book, bookUpdated);
-            _dbContext.Books.Update(bookUpdated);
-            await _dbContext.SaveChangesAsync();
+            throw new BookNotFoundException(bookDto.Id);
         }
+        
+        _mapper.Map(bookDto, bookToUpdate);
+        
+        var author = await _dbContext.Authors.FindAsync(bookDto.AuthorId);
+        var publisher = await _dbContext.Publishers.FindAsync(bookDto.PublisherId);
+
+        if (author == null) throw new AuthorNotFoundException(bookDto.AuthorId);
+        if (publisher == null) throw new PublisherNotFoundException(bookDto.PublisherId);
+
+        bookToUpdate.Author = author;
+        bookToUpdate.Publisher = publisher;
+
+        _dbContext.Books.Update(bookToUpdate);
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(Guid id)

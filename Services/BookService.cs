@@ -9,13 +9,9 @@ namespace LibraryAPI.Services;
 
 public class BookService(
     IBookRepository bookRepository,
-    ILogger<BookService> logger,
-    IValidator<Book> bookValidator,
-    IValidator<BookDto> bookDtoValidator) : IBookService
+    ILogger<BookService> logger) : IBookService
 {
     private readonly IBookRepository _bookRepository = bookRepository;
-    private readonly IValidator<Book> _bookValidator = bookValidator;
-    private readonly IValidator<BookDto> _bookDtoValidator = bookDtoValidator;
     private readonly ILogger<BookService> _logger = logger;
 
     public async Task<List<Book>> GetAllBooksAsync()
@@ -56,13 +52,6 @@ public class BookService(
     {
         try
         {
-            var validationResult = await _bookDtoValidator.ValidateAsync(bookDto);
-            if (!validationResult.IsValid)
-            {
-                _logger.LogWarning("Invalid book data provided.");
-                throw new Exception("Book data is invalid.");
-            }
-            
             await _bookRepository.AddAsync(bookDto);
             _logger.LogInformation("Book added successfully.");
         }
@@ -72,20 +61,12 @@ public class BookService(
             throw new Exception("An error occurred while adding book.", ex);
         }
     }
-    
-    public async Task UpdateAsync(Book book)
+
+    public async Task UpdateAsync(BookDto bookDto)
     {
         try
         {
-            var validationResult = await _bookValidator.ValidateAsync(book);
-            if (!validationResult.IsValid)
-            {
-                _logger.LogWarning("Invalid book data provided.");
-                throw new Exception("Book data is invalid.");
-            }
-            
-            await _bookRepository.UpdateAsync(book);
-
+            await _bookRepository.UpdateAsync(bookDto);
             _logger.LogInformation("Book updated successfully.");
         }
         catch (Exception ex)
@@ -94,6 +75,8 @@ public class BookService(
             throw new Exception("An error occurred while updating book.", ex);
         }
     }
+
+
 
     public async Task DeleteAsync(Guid id)
     {

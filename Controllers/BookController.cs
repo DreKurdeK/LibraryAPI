@@ -11,14 +11,13 @@ namespace LibraryAPI.Controllers;
 public class BookController(
     IBookService bookService,
     ILogger<BookController> logger,
-    IValidator<BookDto> bookDtoValidator,
-    IValidator<Book> bookValidator
+    IValidator<BookDto> bookValidator
     ) : ControllerBase
 {
     private readonly IBookService _bookService = bookService;
     private readonly ILogger<BookController> _logger = logger;
-    private readonly IValidator<BookDto> _bookDtoValidator = bookDtoValidator;
-    private readonly IValidator<Book> _bookValidator = bookValidator;
+    private readonly IValidator<BookDto> _bookValidator = bookValidator;
+
     
     // GET: api/book
     [HttpGet]
@@ -51,37 +50,38 @@ public class BookController(
         if (bookDto is null) return BadRequest();
         _logger.LogInformation("Adding book: {book}", bookDto);
 
-        var validationResult = await _bookDtoValidator.ValidateAsync(bookDto);
+        var validationResult = await _bookValidator.ValidateAsync(bookDto);
         if (!validationResult.IsValid)
         {
             _logger.LogWarning("Book data is invalid");
             return BadRequest(validationResult.Errors);
         }
-        
-        await _bookService.AddAsync(bookDto);
-        return Created();
-    }
     
+        await _bookService.AddAsync(bookDto);
+        return CreatedAtAction(nameof(GetByIdAsync), new { id = bookDto.Id }, bookDto);
+    }
+
     // PUT: api/book/{id}
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateAsync(Guid id, Book book)
+    public async Task<ActionResult> UpdateAsync(Guid id, BookDto bookDto)
     {
-        if (id != book.Id)
+        if (id != bookDto.Id)
         {
             _logger.LogWarning("Book ID in the route does not match ID in the body");
             return BadRequest("ID mismatch");
         }
-        
-        var validationResult = await _bookValidator.ValidateAsync(book);
+    
+        var validationResult = await _bookValidator.ValidateAsync(bookDto);
         if (!validationResult.IsValid)
         {
             _logger.LogWarning("Book data is invalid");
             return BadRequest(validationResult.Errors);
         }
-        
-        await _bookService.UpdateAsync(book);
+    
+        await _bookService.UpdateAsync(bookDto);
         return NoContent();
     }
+
     
     // DELETE: api/book/{id}
     [HttpDelete("{id}")]
