@@ -1,7 +1,11 @@
+using Serilog;
+using static LibraryAPI.Configuration.LoggerConfigurator;
 using static LibraryAPI.Configuration.ServiceConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
+ConfigureLogger();
+builder.Host.UseSerilog();
 await ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
