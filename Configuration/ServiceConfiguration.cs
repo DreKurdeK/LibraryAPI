@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Text.Json;
+using FluentValidation;
 using LibraryAPI.Data;
 using LibraryAPI.Helpers;
 using LibraryAPI.Repositories;
@@ -48,7 +49,11 @@ public static class ServiceConfiguration
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IPublisherRepository, PublisherRepository>();
         
-        services.AddControllers();
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            });
     }
 
 }
