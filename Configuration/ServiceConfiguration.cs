@@ -32,12 +32,7 @@ public static class ServiceConfiguration
             }
         }
         
-        services.AddLogging(logging =>
-        {
-            logging.AddConsole();
-            logging.AddDebug();
-            logging.AddEventSourceLogger();
-        });
+        
         
         services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
         
