@@ -5,7 +5,7 @@ namespace LibraryAPI.Services;
 
 public interface IBookService
 {
-    Task<List<Book>> GetAllBooksAsync();
+    Task<PagedResult<Book>> GetAllBooksAsync(int pageNumber, int pageSize, string sortBy = "Title", bool ascending = true);
     Task<Book?> GetByIdAsync(Guid id);
     Task AddAsync(BookDto book);
     Task UpdateAsync(BookDto bookDto);

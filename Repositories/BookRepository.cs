@@ -11,11 +11,43 @@ public class BookRepository(LibraryDbContext dbContext, IMapper mapper) : IBookR
 {
     private readonly LibraryDbContext _dbContext = dbContext;
     private readonly IMapper _mapper = mapper;
-
-    public async Task<List<Book>> GetAllBooksAsync()
+    public async Task<PagedResult<Book>> GetAllBooksAsync(int pageNumber, int pageSize, string sortBy = "Title", bool ascending = true)
     {
-        return await _dbContext.Books.ToListAsync();
+        var query = _dbContext.Books.AsQueryable();
+
+        Dictionary<string, Func<IQueryable<Book>, bool, IOrderedQueryable<Book>>> sortOptions = new Dictionary<string, Func<IQueryable<Book>, bool, IOrderedQueryable<Book>>>
+        {
+            { "title", (query, ascending) => ascending ? query.OrderBy(p => p.Title) : query.OrderByDescending(p => p.Title) },
+            { "author", (query, ascending) => ascending ? query.OrderBy(p => p.Author.LastName) : query.OrderByDescending(p => p.Author.LastName) },
+            { "publisher", (query, ascending) => ascending ? query.OrderBy(p => p.Publisher.Name) : query.OrderByDescending(p => p.Publisher.Name) },
+            { "category", (query, ascending) => ascending ? query.OrderBy(p => p.Category.ToString()) : query.OrderByDescending(p => p.Category.ToString()) },
+            { "releasedate", (query, ascending) => ascending ? query.OrderBy(p => p.ReleaseDate) : query.OrderByDescending(p => p.ReleaseDate) }
+        };
+        
+        string sortKey = sortBy.ToLower();
+        
+        if (sortOptions.ContainsKey(sortKey))
+        {
+            query = sortOptions[sortKey](query, ascending);
+        }
+        else
+        {
+            query = ascending ? query.OrderBy(p => p.Title) : query.OrderByDescending(p => p.Title);
+        }
+        
+        var totalItems = await query.CountAsync();
+        
+        var books = await query.Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Book>
+        {
+            TotalItems = totalItems,
+            Items = books
+        };
     }
+
 
     public async Task<Book?> GetByIdAsync(Guid id)
     {

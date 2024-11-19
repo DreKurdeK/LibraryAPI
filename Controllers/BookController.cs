@@ -21,11 +21,23 @@ public class BookController(
     
     // GET: api/book
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Book>>> GetAllBooksAsync()
+    public async Task<ActionResult<PagedResult<Book>>> GetAllBooksAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string sortBy = "Title", [FromQuery] bool ascending = true)
     {
-        _logger.LogInformation("Fetching all books");
-        var books = await _bookService.GetAllBooksAsync();
-        return Ok(books);
+        _logger.LogInformation("Fetching books from service.");
+
+        try
+        {
+            // Call service to get paginated and sorted books
+            var result = await _bookService.GetAllBooksAsync(pageNumber, pageSize, sortBy, ascending);
+
+            _logger.LogInformation($"Successfully fetched {result.Items.Count()} books.");
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while fetching books.");
+            return StatusCode(500, "An error occurred while fetching books.");
+        }
     }
 
     // GET: api/book/{id}

@@ -14,22 +14,21 @@ public class BookService(
     private readonly IBookRepository _bookRepository = bookRepository;
     private readonly ILogger<BookService> _logger = logger;
 
-    public async Task<List<Book>> GetAllBooksAsync()
+    public async Task<PagedResult<Book>> GetAllBooksAsync(int pageNumber, int pageSize, string sortBy = "Title", bool ascending = true)
     {
         try
         {
-            _logger.LogInformation("Fetching all books.");
-            return await _bookRepository.GetAllBooksAsync();
-        }
-        catch (BookNotFoundException ex)
-        {
-            _logger.LogError(ex, $"Book with ID {ex.BookId} was not found.");
-            throw;
+            _logger.LogInformation("Fetching books from repository.");
+            var result = await _bookRepository.GetAllBooksAsync(pageNumber, pageSize, sortBy, ascending);
+
+            _logger.LogInformation($"Fetched {result.Items.Count()} books.");
+
+            return result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred while fetching book.");
-            throw new Exception("An error occurred while fetching book.", ex);
+            _logger.LogError(ex, "Error occurred while fetching books.");
+            throw new Exception("An error occurred while fetching books.", ex);
         }
     }
 
