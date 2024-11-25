@@ -1,7 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using LibraryAPI.Exceptions;
 using LibraryAPI.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
@@ -45,6 +47,26 @@ public class UserService(IConfiguration configuration) : IUserService
         }
 
         return Task.FromResult(GenerateJwtToken(user));
+    }
+    
+    public Task<string> ChangePasswordAsync(Guid userId, ChangePasswordRequest request)
+    {
+        var user = _users.FirstOrDefault(u => u.Id == userId);
+        if (user == null)
+        {
+            throw new UserNotFoundException(userId);
+        }
+        
+        var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.NewPassword);
+
+        if (passwordVerificationResult == PasswordVerificationResult.Failed)
+        {
+            throw new UnauthorizedAccessException("Current password is incorrect.");
+        }
+        
+        user.PasswordHash = _passwordHasher.HashPassword(user, request.NewPassword);
+
+        return Task.FromResult("Password updated successfully.");
     }
 
     private string GenerateJwtToken(User user)

@@ -7,4 +7,5 @@ public interface IUserService
 {
     Task<User> RegisterAsync(RegisterRequest request);
     Task<string> LoginAsync(LoginRequest request);
+    Task<string> ChangePasswordAsync(Guid userId, ChangePasswordRequest request);
 }
