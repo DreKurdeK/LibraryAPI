@@ -1,4 +1,5 @@
 ﻿using LibraryAPI.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace LibraryAPI.Data;
 
@@ -8,6 +9,44 @@ public static class DbInitializer
     {
         // await dbContext.Database.EnsureDeletedAsync();
         await dbContext.Database.EnsureCreatedAsync();
+        
+        if (!dbContext.Roles.Any())
+        {
+            var roles = new List<Role>
+            {
+                new Role { Name = "Admin" },
+                new Role { Name = "Manager" },
+                new Role { Name = "User" }
+            };
+
+            dbContext.Roles.AddRange(roles);
+            await dbContext.SaveChangesAsync();
+        }
+        
+        if (!dbContext.Users.Any())
+        {
+            var user = new User
+            {
+                Username = "admin",
+                Email = "admin@example.com",
+                UserRoles = new List<UserRole>()
+            };
+            var passwordHasher = new PasswordHasher<User>();
+            user.PasswordHash = passwordHasher.HashPassword(user, "admin123");
+            
+            var adminRole = dbContext.Roles.FirstOrDefault(r => r.Name == "Admin");
+            if (adminRole != null)
+            {
+                user.UserRoles.Add(new UserRole
+                {
+                    User = user,
+                    Role = adminRole
+                });
+            }
+
+            dbContext.Users.Add(user);
+            await dbContext.SaveChangesAsync();
+        }
         
         if (dbContext.Books.Any() || dbContext.Authors.Any() || dbContext.Publishers.Any())
         {
