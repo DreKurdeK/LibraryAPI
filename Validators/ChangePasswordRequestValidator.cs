@@ -22,5 +22,4 @@ public class ChangePasswordRequestValidator : AbstractValidator<ChangePasswordRe
             .NotEmpty().WithMessage("Confirm password is required.")
             .Equal(x => x.NewPassword).WithMessage("New password and confirmation password do not match.");
     }
-    }
 }
