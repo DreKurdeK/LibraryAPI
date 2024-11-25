@@ -2,6 +2,7 @@
 using LibraryAPI.DTOs;
 using LibraryAPI.Models;
 using LibraryAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Controllers;
@@ -20,6 +21,7 @@ public class BookController(
 
     
     // GET: api/book
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<PagedResult<Book>>> GetAllBooksAsync(
         [FromQuery] int pageNumber = 1, 
@@ -44,6 +46,7 @@ public class BookController(
     }
 
     // GET: api/book/{id}
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<Book>> GetByIdAsync(Guid id)
     {
@@ -59,6 +62,7 @@ public class BookController(
     }
     
     // POST: api/book
+    [Authorize(Roles = "Manager, Admin")]
     [HttpPost]
     public async Task<ActionResult<BookDto>> AddAsync(BookDto? bookDto)
     {
@@ -77,6 +81,7 @@ public class BookController(
     }
 
     // PUT: api/book/{id}
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateAsync(Guid id, [FromBody] BookDto bookDto)
     {
@@ -99,6 +104,7 @@ public class BookController(
 
     
     // DELETE: api/book/{id}
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAsync(Guid id)
     {

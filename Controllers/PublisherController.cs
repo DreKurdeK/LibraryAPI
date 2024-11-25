@@ -2,6 +2,7 @@
 using LibraryAPI.DTOs;
 using LibraryAPI.Models;
 using LibraryAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Controllers;
@@ -19,6 +20,7 @@ public class PublisherController(
     private readonly IValidator<PublisherDto> _publisherValidator = publisherValidator;
     
     // GET: api/publisher
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<PagedResult<Publisher>>> GetAllPublishersAsync(
         [FromQuery] int pageNumber = 1, 
@@ -44,6 +46,7 @@ public class PublisherController(
 
 
     // GET: api/publisher/{id}
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<Publisher>> GetByIdAsync(Guid id)
     {
@@ -59,6 +62,7 @@ public class PublisherController(
     }
     
     // POST: api/publisher
+    [Authorize(Roles = "Manager, Admin")]
     [HttpPost]
     public async Task<ActionResult> AddAsync(PublisherDto publisherDto)
     {
@@ -76,6 +80,7 @@ public class PublisherController(
     }
 
     // PUT: api/publisher/{id}
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateAsync(Guid id, [FromBody] PublisherDto publisherDto)
     {
@@ -97,6 +102,7 @@ public class PublisherController(
     }
     
     // DELETE: api/publisher/{id}
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAsync(Guid id)
     {

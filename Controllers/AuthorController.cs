@@ -3,6 +3,7 @@ using LibraryAPI.DTOs;
 using LibraryAPI.Models;
 using LibraryAPI.Services;
 using LibraryAPI.Validators;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Controllers;
@@ -20,6 +21,7 @@ public class AuthorController(
     private readonly IValidator<AuthorDto> _authorValidator = authorValidator;
     
     // GET: api/author
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<PagedResult<Author>>> GetAllAuthorsAsync(
         [FromQuery] int pageNumber = 1, 
@@ -44,6 +46,7 @@ public class AuthorController(
     }
 
     // GET: api/author/{id}
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<Author>> GetByIdAsync(Guid id)
     {
@@ -59,6 +62,7 @@ public class AuthorController(
     }
     
     // POST: api/author
+    [Authorize(Roles = "Manager, Admin")]
     [HttpPost]
     public async Task<ActionResult> AddAsync(AuthorDto authorDto)
     {
@@ -76,6 +80,7 @@ public class AuthorController(
     }
 
     // PUT: api/author/{id}
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateAsync(Guid id, [FromBody] AuthorDto authorDto)
     {
@@ -97,6 +102,7 @@ public class AuthorController(
     }
     
     // DELETE: api/author/{id}
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAsync(Guid id)
     {
