@@ -46,6 +46,7 @@ public static class ServiceConfiguration
         services.AddValidatorsFromAssemblyContaining<PublisherDtoValidator>();
 
         // Services
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<IBookService, BookService>();
         services.AddScoped<IAuthorService, AuthorService>();
         services.AddScoped<IPublisherService, PublisherService>();
