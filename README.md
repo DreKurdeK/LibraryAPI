@@ -12,7 +12,7 @@ LibraryAPI is a simple RESTful Web API for managing books, authors, and publishe
 ### Technologies
 
 * .NET 9.0 / C# 13
-* ASP.NET Core Web API
+* ASP .NET Core Web API
 * Entity Framework Core
 * Serilog
 * Swagger / OpenAPI
