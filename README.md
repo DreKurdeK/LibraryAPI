@@ -1,6 +1,6 @@
 ## LibraryAPI
 
-LibraryAPI is a simple RESTful Web API for managing books, authors, and publishers. It follows a modular monolith architecture using ASP.NET Core, and includes structured logging, Swagger documentation, and async support.
+LibraryAPI is a simple layered RESTful Web API for managing books, authors, and publishers. It is built with ASP.NET Core and includes structured logging, Swagger documentation, and asynchronous support.
 
 ### Features
 
@@ -12,7 +12,7 @@ LibraryAPI is a simple RESTful Web API for managing books, authors, and publishe
 ### Technologies
 
 * .NET 9.0 / C# 13
-* ASP .NET Core Web API
+* ASP.NET Core Web API
 * Entity Framework Core
 * Serilog
 * Swagger / OpenAPI
